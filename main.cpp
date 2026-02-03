@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <stdio.h>
-#include <time.h>
+#include <fstream>
+#include <ctime>
 #include <limits>
 using namespace std;
 struct Character
@@ -15,14 +15,16 @@ bool running = true;
 static void init()
 {
 	srand((int)time(NULL));
-	FILE* file = fopen("characters.txt", "r");
-	if (file == NULL)
+	ifstream file("characters.txt");
+	if (!file.is_open())
 		return;
-	(void)fscanf(file, "%d", &characterCount);
+	if (!(file >> characterCount))
+		return;
 	character = new Character[characterCount];
 	for (int i = 0; i < characterCount; i++)
-		(void)fscanf(file, "%s", character[i].name);
-	fclose(file);
+		if (!(file >> character[i].name))
+			break;
+	file.close();
 }
 static int handle_input() 
 {
@@ -169,5 +171,7 @@ int main()
 			cout << "\nInvalid input" << endl << endl;
 	}
 	delete[] character;
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	cin.get();
 	return 0;
 }
