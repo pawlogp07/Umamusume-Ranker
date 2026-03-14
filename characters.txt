@@ -1,4 +1,4 @@
-134
+141
 Admire_Groove
 Admire_Vega
 Agnes_Digital
@@ -33,9 +33,11 @@ Duramente
 Durandal
 Eishin_Flash
 El_Condor_Pasa
+Epiphaneia
 Espoir_City
 Fenomeno
 Fine_Motion
+Forever_Young
 Fuji_Kiseki
 Furioso
 Fusaichi_Pandora
@@ -59,9 +61,11 @@ Kawakami_Princess
 King_Halo
 Kiseki
 Kitasan_Black
+Logotype
 Loves_Only_You
 Lucky_Lilac
 Manhattan_Cafe
+Marche_Lorraine
 Maruzensky
 Marvelous_Sunday
 Matikanefukukitaru
@@ -91,7 +95,9 @@ Orfevre
 Red_Desire
 Rhein_Kraft
 Rice_Shower
+Rose_Kingdom
 Royce_And_Royce
+Rulership
 Sakura_Bakushin_O
 Sakura_Chitose_O
 Sakura_Chiyono_O
@@ -124,6 +130,7 @@ Transcend
 Tsurumaru_Tsuyoshi
 Twin_Turbo
 Verxina
+Victoire_Pisa
 Vivlos
 Vodka
 Win_Variation
