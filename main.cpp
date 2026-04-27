@@ -3,66 +3,63 @@
 #include <fstream>
 #include <ctime>
 #include <limits>
+#include <string>
+#include <vector>
 using namespace std;
 struct Character
 {
-	char name[64]{};
+	string name;
 	int keepCutState = 0;
 };
-Character* character = nullptr;
-int characterCount = 0;
-bool running = true;
-static void init()
+vector<Character> characters;
+void init(unsigned short &characterCount)
 {
 	srand((int)time(NULL));
 	ifstream file("characters.txt");
-	if (!file.is_open())
-		return;
-	if (!(file >> characterCount))
-		return;
-	character = new Character[characterCount];
+	if (!file.is_open()) return;
+	if (!(file >> characterCount)) return;
+	characters.clear();
+	characters.resize(characterCount);
 	for (int i = 0; i < characterCount; i++)
-		if (!(file >> character[i].name))
-			break;
+		if (!(file >> characters[i].name)) break;
 	file.close();
 }
-static int handle_input() 
+short handle_input() 
 {
-	int input;
+	short input;
 	while (!(cin >> input)) 
 	{
-		cout << "\nInvalid input, enter an int value\n";
+		cout << "\nInvalid input, enter a short value\n";
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 	return input;
 }
-static void randomize(int start, int count)
+void randomize(short start, short count, unsigned short characterCount)
 {
 	for (int i = start; i < count; i++)
 	{
-		Character temp = character[i];
-		int randIndex = rand() % characterCount;
-		character[i] = character[randIndex];
-		character[randIndex] = temp;
+		Character temp = characters[i];
+		unsigned short randIndex = rand() % characterCount;
+		characters[i] = characters[randIndex];
+		characters[randIndex] = temp;
 	}
 }
-static void blindRanking()
+void blindRanking(unsigned short characterCount)
 {
-	int input, current = 5, filled = 0;
-	int results[5] = { -1, -1, -1, -1, -1 };
-	bool position_taken[5] = { false };
-	randomize(5, 10);
+	short input, current = 5, filled = 0, results[5] = { 0, 0, 0, 0, 0 };
+	bool running = true, position_taken[5] = { false, false, false, false, false };
+	randomize(5, 10, characterCount);
 	cout << "\n";
 	while (running)
 	{
 		if (filled == 5)
 		{
-			cout << "\nYour final ranking:" << endl;
+			cout << "\nYour final ranking:" << "\n";
 			for (int i = 0; i < 5; i++)
 			{
-				string name = position_taken[i] ? character[results[i]].name : "---";
-				cout << i + 1 << ". " << name << endl;
+				string name = position_taken[i] ? characters[results[i]].name : "---";
+				cout << i + 1 << ". " << name << "\n";
 			}
 			running = false;
 			break;
@@ -70,10 +67,10 @@ static void blindRanking()
 		cout << "\n";
 		for (int i = 0; i < 5; i++)
 		{
-			string name = position_taken[i] ? character[results[i]].name : "---";
-			cout << i + 1 << ". " << name << endl;
+			string name = position_taken[i] ? characters[results[i]].name : "---";
+			cout << i + 1 << ". " << name << "\n";
 		}
-		cout << "\nRank " << character[current].name << endl;
+		cout << "\nRank " << characters[current].name << "\n";
 		input = handle_input();
 		if (input >= 1 && input <= 5 && !position_taken[input - 1])
 		{
@@ -83,94 +80,92 @@ static void blindRanking()
 			filled++;
 		}
 		else
-			cout << "\nPosition is already taken" << endl;
+			cout << "\nPosition is already taken" << "\n";
 	}
 }
-static void draw44table(int kCount, int cCount, int current)
+void draw44table(short kCount, short cCount, short current)
 {
 	cout << "\nKEEP:";
 	for (int i = 0; i < 8; i++)
-	{
-		if (character[i].keepCutState == 1)
-			cout << "\n" << kCount++ << ". " << character[i].name;
-	}
+		if (characters[i].keepCutState == 1)
+			cout << "\n" << kCount++ << ". " << characters[i].name;
 	for (int i = kCount; i <= 4; i++)
 		cout << "\n" << i << ". ---";
 	cout << "\n\nCUT:";
 	for (int i = 0; i < 8; i++)
-	{
-		if (character[i].keepCutState == -1)
-			cout << "\n" << cCount++ << ". " << character[i].name;
-	}
+		if (characters[i].keepCutState == -1)
+			cout << "\n" << cCount++ << ". " << characters[i].name;
 	for (int i = cCount; i <= 4; i++)
 		cout << "\n" << i << ". ---";
 }
-static void keep4cut4()
+void keep4cut4(unsigned short characterCount)
 {
-	int input, current = 0, filled = 0;
-	int keepslots = 4, cutslots = 4;
-	randomize(0, 8);
+	short input, current = 0, filled = 0, keepslots = 4, cutslots = 4;
+	bool running = true;
+	randomize(0, 8, characterCount);
 	cout << "\n";
 	while (running)
 	{
-		int kCount = 1, cCount = 1;
+		short kCount = 1, cCount = 1;
 		if (filled == 8)
 		{
-			cout << "\nYour final ranking:" << endl;
+			cout << "\nYour final ranking:" << "\n";
 			draw44table(kCount, cCount, current);
 			cout << "\n";
 			running = false;
 			break;
 		}
 		draw44table(kCount, cCount, current);
-		cout << "\n\nKeep or cut: " << character[current].name << " [Keep - 1/Cut - 2]" << endl;
+		cout << "\n\nKeep or cut: " << characters[current].name << " [Keep - 1 / Cut - 2]" << "\n";
 		input = handle_input();
 		if (input == 1 && keepslots > 0)
 		{
-			character[current].keepCutState = 1;
+			characters[current].keepCutState = 1;
 			keepslots--;
 			current++;
 			filled++;
 		}
 		else if (input == 2 && cutslots > 0)
 		{
-			character[current].keepCutState = -1;
+			characters[current].keepCutState = -1;
 			cutslots--;
 			current++;
 			filled++;
 		}
 		else if ((input == 1 && keepslots == 0) || (input == 2 && cutslots == 0))
-			cout << "\nNo slots remaining" << endl;
+			cout << "\nNo slots remaining" << "\n";
 		else
-			cout << "\nInvalid input" << endl;
+			cout << "\nInvalid input" << "\n";
 	}
 }
 int main()
 {
-	init();
-	int choice = 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	cout.tie(NULL);
+	unsigned short choice, characterCount = 0;
+	init(characterCount);
 	bool menu = true;
 	while (menu)
 	{
-		cout << "[1] BLIND RANKING" << endl;
-		cout << "[2] KEEP 4 CUT 4" << endl;
+		cout << "[1] BLIND RANKING" << "\n";
+		cout << "[2] KEEP 4 CUT 4" << "\n";
 		choice = handle_input();
 		if (choice == 1 && characterCount >= 10)
 		{
 			menu = false;
-			blindRanking();
+			blindRanking(characterCount);
 		}
 		else if (choice == 2 && characterCount >= 8)
 		{
 			menu = false;
-			keep4cut4();
+			keep4cut4(characterCount);
 		}
 		else if ((choice == 2 && characterCount < 8) || (choice == 1 && characterCount < 10))
-			cout << "\nAdd more characters to characters.txt to play" << endl << endl;
+			cout << "\nAdd more characters to characters.txt to play" << "\n\n";
 		else
-			cout << "\nInvalid input" << endl << endl;
+			cout << "\nInvalid input" << "\n\n";
 	}
-	delete[] character;
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cin.get();
 	return 0;
