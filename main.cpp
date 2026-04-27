@@ -12,7 +12,7 @@ struct Character
 	int keepCutState = 0;
 };
 vector<Character> characters;
-void init(unsigned short &characterCount)
+void init(unsigned int &characterCount)
 {
 	srand((int)time(NULL));
 	ifstream file("characters.txt");
@@ -20,34 +20,34 @@ void init(unsigned short &characterCount)
 	if (!(file >> characterCount)) return;
 	characters.clear();
 	characters.resize(characterCount);
-	for (int i = 0; i < characterCount; i++)
+	for (size_t i = 0; i < characterCount; i++)
 		if (!(file >> characters[i].name)) break;
 	file.close();
 }
-short handle_input() 
+int handle_input() 
 {
-	short input;
+	int input;
 	while (!(cin >> input)) 
 	{
-		cout << "\nInvalid input, enter a short value\n";
+		cout << "\nInvalid input, enter an int value\n";
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 	return input;
 }
-void randomize(short start, short count, unsigned short characterCount)
+void randomize(int start, int count, unsigned int characterCount)
 {
 	for (int i = start; i < count; i++)
 	{
 		Character temp = characters[i];
-		unsigned short randIndex = rand() % characterCount;
+		unsigned int randIndex = rand() % characterCount;
 		characters[i] = characters[randIndex];
 		characters[randIndex] = temp;
 	}
 }
-void blindRanking(unsigned short characterCount)
+void blindRanking(unsigned int characterCount)
 {
-	short input, current = 5, filled = 0, results[5] = { 0, 0, 0, 0, 0 };
+	int input, current = 5, filled = 0, results[5] = { 0, 0, 0, 0, 0 };
 	bool running = true, position_taken[5] = { false, false, false, false, false };
 	randomize(5, 10, characterCount);
 	cout << "\n";
@@ -83,7 +83,7 @@ void blindRanking(unsigned short characterCount)
 			cout << "\nPosition is already taken" << "\n";
 	}
 }
-void draw44table(short kCount, short cCount, short current)
+void draw44table(int kCount, int cCount, int current)
 {
 	cout << "\nKEEP:";
 	for (int i = 0; i < 8; i++)
@@ -98,15 +98,15 @@ void draw44table(short kCount, short cCount, short current)
 	for (int i = cCount; i <= 4; i++)
 		cout << "\n" << i << ". ---";
 }
-void keep4cut4(unsigned short characterCount)
+void keep4cut4(unsigned int characterCount)
 {
-	short input, current = 0, filled = 0, keepslots = 4, cutslots = 4;
+	int input, current = 0, filled = 0, keepslots = 4, cutslots = 4;
 	bool running = true;
 	randomize(0, 8, characterCount);
 	cout << "\n";
 	while (running)
 	{
-		short kCount = 1, cCount = 1;
+		int kCount = 1, cCount = 1;
 		if (filled == 8)
 		{
 			cout << "\nYour final ranking:" << "\n";
@@ -143,7 +143,7 @@ int main()
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
 	cout.tie(NULL);
-	unsigned short choice, characterCount = 0;
+	unsigned int choice, characterCount = 0;
 	init(characterCount);
 	bool menu = true;
 	while (menu)
